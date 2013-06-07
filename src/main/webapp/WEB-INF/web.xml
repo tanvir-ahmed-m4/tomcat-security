@@ -5,14 +5,14 @@
 <web-app>
 	<display-name>Archetype Created Web Application</display-name>
 	<servlet>
-		<servlet-name>TestServlet</servlet-name>
-		<display-name>TestServlet</display-name>
+		<servlet-name>InfoServlet</servlet-name>
+		<display-name>InfoServlet</display-name>
 		<description></description>
-		<servlet-class>test.TestServlet</servlet-class>
+		<servlet-class>security.InfoServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>TestServlet</servlet-name>
-		<url-pattern>/test</url-pattern>
+		<servlet-name>InfoServlet</servlet-name>
+		<url-pattern>/info</url-pattern>
 	</servlet-mapping>
 
 
@@ -42,5 +42,16 @@
 	<security-role>
 		<role-name>teller</role-name>
 	</security-role>
-
+	<security-role>
+		<role-name>6</role-name>
+	</security-role>
+	<security-role>
+		<role-name>7</role-name>
+	</security-role>
+	<security-role>
+		<role-name>8</role-name>
+	</security-role>
+	<security-role>
+		<role-name>9</role-name>
+	</security-role>
 </web-app>
