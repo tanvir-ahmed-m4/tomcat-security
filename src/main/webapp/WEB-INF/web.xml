@@ -3,7 +3,7 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-	<display-name>Archetype Created Web Application</display-name>
+	<display-name>Tomcat Security Tutorial Application</display-name>
 	<servlet>
 		<servlet-name>InfoServlet</servlet-name>
 		<display-name>InfoServlet</display-name>
@@ -14,8 +14,21 @@
 		<servlet-name>InfoServlet</servlet-name>
 		<url-pattern>/info</url-pattern>
 	</servlet-mapping>
+	<filter>
+		<filter-name>LoginFilter</filter-name>
+		<display-name>LoginFilter</display-name>
+		<description></description>
+		<filter-class>security.LoginFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>LoginFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
-
+	<listener>
+		<listener-class>security.SSOSessionListener</listener-class>
+	</listener>
+	
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>All areas</web-resource-name>
