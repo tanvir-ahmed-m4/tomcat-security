@@ -19,6 +19,7 @@ public class InfoServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		out.println("This is the Test Servlet");
 
+		@SuppressWarnings("unchecked")
 		Enumeration<String> headerNames = request.getHeaderNames();
 		while (headerNames.hasMoreElements()) {
 			String headerName = headerNames.nextElement();
@@ -27,7 +28,11 @@ public class InfoServlet extends HttpServlet {
 			out.print("</em>, Header Value: <em>" + headerValue);
 			out.println("</em>");
 		}
-		out.print("<br/>Principal: <br/>" + request.getUserPrincipal());
+		
+		if (request.getUserPrincipal() != null) {
+			out.print("<br/>Principal: <br/>" + request.getUserPrincipal());
+			out.print("<p><a href='logout.jsp'>Log out</a></p>");
+		}
 	}
 
 }
