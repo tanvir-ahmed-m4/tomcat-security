@@ -30,4 +30,16 @@
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
 
+	<!-- Empower Office application DataSource -->
+    <ResourceLink global="jdbc/mfDS" name="jdbc/mfDS" type="javax.sql.DataSource"/>
+	
+    <Resource name="auth/sessionhandler" auth="Container"
+              type="security.EOfficeSessionHandler"
+              factory="org.apache.naming.factory.BeanFactory"/>
+    <Environment name="auth/datasource" type="java.lang.String" value="java:comp/env/jdbc/mfDS"/>
+    
+    <Environment name="auth/system" type="java.lang.String" value="BCUAT"/>
+    <Environment name="auth/programme" type="java.lang.String" value="BCTUK"/>
+
+    <Environment name="auth/couriercode" type="java.lang.String" value="017"/>
 </Context>

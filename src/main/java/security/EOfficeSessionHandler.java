@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,7 +27,7 @@ public class EOfficeSessionHandler implements SessionHandler {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		Principal user = httpRequest.getUserPrincipal();
 		HttpSession session = httpRequest.getSession();
-		// XXX Create a Session record in the database
+		
 		Connection conn = null;
 		try {
 			InitialContext ic = new InitialContext();
@@ -34,10 +35,10 @@ public class EOfficeSessionHandler implements SessionHandler {
 			DataSource ds = (DataSource) ic.lookup(datasource);
 			conn = ds.getConnection();
 
+			// Create a Session record in the database
 			PreparedStatement pstmt;
-
-			// Empower Office
-			pstmt = conn.prepareStatement("INSERT INTO SE (SYST, PGCD, SECD, USCD, DSRT, TSRT, DUPD, LUPD, DEXP, TEXP, STAT)"
+			pstmt = conn.prepareStatement(
+					"INSERT INTO SE (SYST, PGCD, SECD, USCD, DSRT, TSRT, DUPD, LUPD, DEXP, TEXP, STAT)"
 					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'L')");
 
 			String system = (String) ic.lookup("java:comp/env/auth/system");
@@ -51,7 +52,7 @@ public class EOfficeSessionHandler implements SessionHandler {
 
 			pstmt.setString(1, system); // SYST
 			pstmt.setString(2, programme); // PGCD
-			pstmt.setString(3, session.getId()); // SECD
+			pstmt.setString(3, system.concat(session.getId())); // SECD
 			pstmt.setString(4, user.getName()); // USCD
 			pstmt.setString(5, df.format(created)); // DSRT
 			pstmt.setString(6, tf.format(created)); // TSRT
@@ -79,13 +80,46 @@ public class EOfficeSessionHandler implements SessionHandler {
 				}
 			}
 		}
-
 	}
 
 	@Override
 	public void destroy(HttpSessionEvent se) {
-		// TODO Auto-generated method stub
+		Connection conn = null;
+		try {
+			InitialContext ic = new InitialContext();
+			String datasource = (String) ic.lookup("java:comp/env/auth/datasource");
+			DataSource ds = (DataSource) ic.lookup(datasource);
+			conn = ds.getConnection();
 
+			// Read the session record with lock
+			PreparedStatement pstmt1 = conn.prepareStatement("SELECT * FROM SE USE KEY SEKEY WHERE SECD=? FOR UPDATE");
+			pstmt1.setString(1, se.getSession().getId()); // SECD
+			ResultSet rs = pstmt1.executeQuery();
+			if (rs.first()) {
+				// Mark as deleted
+				PreparedStatement pstmt2 = conn.prepareStatement("UPDATE SE SET STAT='D' WHERE SE._BOOKMARK_=?");
+				pstmt2.setString(1, rs.getString("_bookmark_"));
+				pstmt2.executeUpdate();
+				pstmt2.close();
+			}
+			pstmt1.close();
+
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 }

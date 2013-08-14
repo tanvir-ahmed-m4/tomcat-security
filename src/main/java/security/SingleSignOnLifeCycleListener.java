@@ -33,17 +33,9 @@ public class SingleSignOnLifeCycleListener implements HttpSessionListener, Filte
 	private static final Logger logger = Logger.getLogger(SingleSignOnLifeCycleListener.class.getName());
 
 	private static final String SSO_USER_PRINCIPAL = "SSO_USER_PRINCIPAL";
+	private static final String SSO_SESSION_HANDLER = "SSO_SESSION_HANDLER";
 
 	private FilterConfig filterConfig = null;
-
-	// Cookie name for single sign on support
-	/*
-	 * @see org.apache.catalina.authenticator.Constants
-	 */
-	public static final String SINGLE_SIGN_ON_COOKIE = 
-			System.getProperty(
-					"org.apache.catalina.authenticator.Constants.SSO_SESSION_COOKIE_NAME",
-					"JSESSIONIDSSO");
 
 	/**
 	 * Default constructor.
@@ -68,6 +60,8 @@ public class SingleSignOnLifeCycleListener implements HttpSessionListener, Filte
 		// XXX Invalidate/remove the Session record from the database
 		// TODO Change log level to debug
 		logger.info("Session destroyed: " + se.getSession().getId());
+		SessionHandler sh = (SessionHandler) se.getSession().getAttribute(SSO_SESSION_HANDLER);
+		sh.destroy(se);
 	}
 
 	/**
@@ -102,24 +96,13 @@ public class SingleSignOnLifeCycleListener implements HttpSessionListener, Filte
 				logger.info("Request Cookies: " + cookies.toString());
 			}
 
-			// XXX Create a Session record in the database
+			// Call application specific session handler
 			try {
 				InitialContext ic = new InitialContext();
-				String sessionhandler = (String) ic.lookup("java:comp/env/auth/sessionhandler");
-				Class clazz = Class.forName(sessionhandler);
-				SessionHandler sh = (SessionHandler) clazz.newInstance();
+				SessionHandler sh = (SessionHandler) ic.lookup("java:comp/env/auth/sessionhandler");
+				session.setAttribute(SSO_SESSION_HANDLER, sh);
 				sh.create(httpRequest, response, chain);
-
 			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
