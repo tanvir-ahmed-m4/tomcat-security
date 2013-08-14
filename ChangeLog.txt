@@ -1,3 +1,6 @@
+[14-Aug-2013]
+* [TA] A combination that works. Needs restructuring. 
+
 [07-Aug-2013]
 * [TA] SessionListener added, trying to detect login/logout events
 * [TA] LoginFilter added, trying to detect login/logout events

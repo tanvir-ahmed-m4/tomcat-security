@@ -4,7 +4,7 @@
   <groupId>com.metafour</groupId>
   <artifactId>tomcat-security</artifactId>
   <packaging>war</packaging>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.2</version>
   <name>tomcat-security</name>
   <description>tomcat-security Maven Webapp</description>
   <url>http://maven.apache.org</url>
@@ -28,6 +28,11 @@
     	<artifactId>servlet-api</artifactId>
     	<version>2.5</version>
     	<scope>provided</scope>
+    </dependency>
+    <dependency>
+    	<groupId>dom4j</groupId>
+    	<artifactId>dom4j</artifactId>
+    	<version>1.6.1</version>
     </dependency>
   </dependencies>
   <build>
