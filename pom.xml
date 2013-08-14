@@ -4,7 +4,7 @@
   <groupId>com.metafour</groupId>
   <artifactId>tomcat-security</artifactId>
   <packaging>war</packaging>
-  <version>0.0.2</version>
+  <version>0.0.3-SNAPSHOT</version>
   <name>tomcat-security</name>
   <description>tomcat-security Maven Webapp</description>
   <url>http://maven.apache.org</url>
