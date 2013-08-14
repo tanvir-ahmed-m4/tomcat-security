@@ -93,7 +93,8 @@ public class EOfficeSessionHandler implements SessionHandler {
 
 			// Read the session record with lock
 			PreparedStatement pstmt1 = conn.prepareStatement("SELECT * FROM SE USE KEY SEKEY WHERE SECD=? FOR UPDATE");
-			pstmt1.setString(1, se.getSession().getId()); // SECD
+			String system = (String) ic.lookup("java:comp/env/auth/system");
+			pstmt1.setString(1, system.concat(se.getSession().getId())); // SECD
 			ResultSet rs = pstmt1.executeQuery();
 			if (rs.first()) {
 				// Mark as deleted
